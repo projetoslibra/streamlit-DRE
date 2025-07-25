@@ -231,7 +231,76 @@ st.dataframe(df, use_container_width=True, height=500)
 
 # ========== ABA ORIGINAL (VISUAL COMPLETO) ==========
 st.markdown("### Tabela Original (DRE Completa)")
-df_original = ler_google_sheet(SHEET_ID, ABA_ORIGINAL)
+
+
+
+#####################
+# Lê a aba original com cabeçalho na primeira linha da planilha
+def ler_google_sheet_original(sheet_id: str, aba: str) -> pd.DataFrame:
+    aba_formatada = aba.replace(" ", "%20")
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={aba_formatada}"
+    
+    df_raw = pd.read_csv(url, header=None)
+    new_header = df_raw.iloc[0]
+    df = df_raw[1:].copy()
+    df.columns = new_header
+    df = df.reset_index(drop=True)
+    return df
+
+df_original = ler_google_sheet_original(SHEET_ID, ABA_ORIGINAL)
+
+# Insere linha em branco antes das linhas de destaque (exceto as 3 últimas)
+indices_destaque = [
+    i for i, row in df_original.iterrows()
+    if str(row.iloc[0]).strip() in linhas_destaque
+]
+
+# Remover as 3 últimas linhas de destaque do processo de inserção
+indices_para_inserir = indices_destaque[:-3] if len(indices_destaque) > 3 else []
+
+for i in reversed(indices_para_inserir):
+    linha_em_branco = pd.Series([""] * len(df_original.columns), index=df_original.columns)
+    df_original = pd.concat([
+        df_original.iloc[:i],
+        pd.DataFrame([linha_em_branco]),
+        df_original.iloc[i:]
+    ], ignore_index=True)
+
+# Estiliza cabeçalho e células da tabela final
+st.markdown(f"""
+    <style>
+        table thead th {{
+            font-weight: 900 !important;
+            text-align: center !important;
+            color: {HONEYDEW} !important;
+        }}
+        table tbody td {{
+            text-align: center !important;
+            vertical-align: middle !important;
+        }}
+    </style>
+""", unsafe_allow_html=True)
+
+# Função para destacar linhas especiais
+def highlight_linhas_especiais(row):
+    if str(row.iloc[0]).strip() in linhas_destaque:
+        return ['background-color: #4169E1; font-weight: bold'] * len(row)
+    return [''] * len(row)
+
+table_styles = [
+    {"selector": "td", "props": [("text-align", "center"), ("vertical-align", "middle")]},
+    {"selector": "th", "props": [("text-align", "center"), ("font-weight", "900"), ("color", HONEYDEW)]}
+]
+
+# Exibe a tabela com estilos aplicados
+st.dataframe(
+    df_original.style
+        .apply(highlight_linhas_especiais, axis=1)
+        .set_table_styles(table_styles),
+    use_container_width=True,
+    height=500
+)
+##############################
 
 
 
