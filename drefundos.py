@@ -239,7 +239,15 @@ st.markdown("### Tabela Original (DRE Completa)")
 def ler_google_sheet_original(sheet_id: str, aba: str) -> pd.DataFrame:
     aba_formatada = aba.replace(" ", "%20")
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={aba_formatada}"
-    df = pd.read_csv(url, skiprows=3)
+    
+    df_raw = pd.read_csv(url, header=None)
+    
+    # Usa a primeira linha como cabeçalho
+    new_header = df_raw.iloc[0]
+    df = df_raw[1:].copy()
+    df.columns = new_header
+    df = df.reset_index(drop=True)
+    
     return df
 
 df_original = ler_google_sheet_original(SHEET_ID, ABA_ORIGINAL)
