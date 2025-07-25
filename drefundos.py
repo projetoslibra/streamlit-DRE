@@ -145,25 +145,44 @@ dados = df_filtrado.iloc[0]
 colunas_por_linha = 3
 cards = []
 
+largura_cartao = "220px"
+espacamento_cartao = "0.5rem auto 1.5rem auto"  # topo, lateral, inferior, lateral
+
 for i, col in enumerate(colunas_numericas):
     valor = dados[col]
 
-    if col in colunas_cor_condicional:
-        # RENTABILIDADE: verde se > 0, vermelho se < 0
-        cor_fundo = VERDE if valor > 0 else VERMELHO
-    elif col == "Subordinação Mezanino" and valor < 20:
-        cor_fundo = VERMELHO  # vermelho claro para sub mezanino < 20%
-    elif col == "Subordinação Senior" and valor < 40:
-        cor_fundo = VERMELHO  # vermelho claro para sub senior < 40%
-    else:
-        cor_fundo = HONEYDEW  # cor padrão dos demais
+    estilo_cartao = f"width: {largura_cartao}; min-height: 120px; margin: {espacamento_cartao};"
 
-    html = f"""
-        <div class=\"card\" style=\"background-color:{cor_fundo}; width: 100%; max-width: 220px;\">
-            <h4>{col}</h4>
-            <p>{formatar_valor(col, valor)}</p>
-        </div>
-    """
+    if col in colunas_cor_condicional:
+        cor_fundo = VERDE if valor > 0 else VERMELHO
+        html = f"""
+            <div class=\"card\" style=\"background-color:{cor_fundo}; {estilo_cartao}\">
+                <h4>{col}</h4>
+                <p>{formatar_valor(col, valor)}</p>
+            </div>
+        """
+    elif col == "Subordinação Mezanino" and valor < 20:
+        html = f"""
+            <div class=\"card\" style=\"background-color:{VERMELHO}; {estilo_cartao}\">
+                <h4>{col}</h4>
+                <p>{formatar_valor(col, valor)}</p>
+            </div>
+        """
+    elif col == "Subordinação Senior" and valor < 40:
+        html = f"""
+            <div class=\"card\" style=\"background-color:{VERMELHO}; {estilo_cartao}\">
+                <h4>{col}</h4>
+                <p>{formatar_valor(col, valor)}</p>
+            </div>
+        """
+    else:
+        html = f"""
+            <div class=\"card\" style=\"{estilo_cartao}\">
+                <h4>{col}</h4>
+                <p>{formatar_valor(col, valor)}</p>
+            </div>
+        """
+
     cards.append(html)
 
 
@@ -177,17 +196,6 @@ for i in range(0, len(cards), colunas_por_linha):
 st.markdown("### Histórico Completo")
 st.dataframe(df, use_container_width=True, height=500)
 
-# ========== MATRIZ ==========
-matriz = df_filtrado[colunas_numericas].T.copy()
-matriz.columns = ["Valor"]
-matriz = matriz[matriz["Valor"] != 0]
-
-st.markdown("### Dados do Dia (Para Exportação)")
-st.dataframe(
-    matriz,
-    use_container_width=True,
-    height=280
-)
 
 # ========== ABA ORIGINAL (VISUAL COMPLETO) ==========
 st.markdown("### Tabela Original (DRE Completa)")
