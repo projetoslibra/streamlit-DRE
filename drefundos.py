@@ -331,13 +331,3 @@ table_styles = [
     {"selector": "td", "props": [("text-align", "center"), ("vertical-align", "middle")]},
     {"selector": "th", "props": [("text-align", "center"), ("font-weight", "900"), ("color", HONEYDEW)]}
 ]
-
-
-# Exibe a tabela com estilos aplicados
-st.dataframe(
-    df_original.style
-        .apply(highlight_linhas_especiais, axis=1)
-        .set_table_styles(table_styles),
-    use_container_width=True,
-    height=500
-)
