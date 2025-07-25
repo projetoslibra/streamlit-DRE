@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-
+caminho_logo = "G:/Drives compartilhados/13. DATA ANALYSIS/04. Logos/Capital - Branca.png"
 
 # ========= SISTEMA DE LOGIN =========
 usuarios = {
@@ -153,6 +153,15 @@ for col in colunas_numericas:
 
 st.set_page_config(page_title=f"DRE - Fundo {fundo_sel}", layout="wide")
 st.title(f"DRE - Fundo {fundo_sel}")
+
+st.markdown(
+    """
+    <div style='display: flex; align-items: center; justify-content: flex-start; margin-top: -10px; margin-bottom: 20px;'>
+        <img src="https://raw.githubusercontent.com/projetoslibra/streamlit-DRE/main/Imagens/Capital-branca.png" style="height: 60px;" />
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # === SIDEBAR: FILTRO DE DATA ===
 st.sidebar.title("Filtro de Data")
