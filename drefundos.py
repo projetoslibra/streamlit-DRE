@@ -147,22 +147,25 @@ cards = []
 
 for i, col in enumerate(colunas_numericas):
     valor = dados[col]
+
     if col in colunas_cor_condicional:
+        # RENTABILIDADE: verde se > 0, vermelho se < 0
         cor_fundo = VERDE if valor > 0 else VERMELHO
-        html = f"""
-            <div class=\"card\" style=\"background-color:{cor_fundo}; width: 100%; max-width: 220px;\">
-                <h4>{col}</h4>
-                <p>{formatar_valor(col, valor)}</p>
-            </div>
-        """
+    elif col == "Subordinação Mezanino" and valor < 20:
+        cor_fundo = VERMELHO  # vermelho claro para sub mezanino < 20%
+    elif col == "Subordinação Senior" and valor < 40:
+        cor_fundo = VERMELHO  # vermelho claro para sub senior < 40%
     else:
-        html = f"""
-            <div class=\"card\" style=\"width: 100%; max-width: 220px;\">
-                <h4>{col}</h4>
-                <p>{formatar_valor(col, valor)}</p>
-            </div>
-        """
+        cor_fundo = HONEYDEW  # cor padrão dos demais
+
+    html = f"""
+        <div class=\"card\" style=\"background-color:{cor_fundo}; width: 100%; max-width: 220px;\">
+            <h4>{col}</h4>
+            <p>{formatar_valor(col, valor)}</p>
+        </div>
+    """
     cards.append(html)
+
 
 for i in range(0, len(cards), colunas_por_linha):
     cols = st.columns(colunas_por_linha)
