@@ -1,6 +1,38 @@
 import streamlit as st
 import pandas as pd
 
+
+
+# ========= SISTEMA DE LOGIN =========
+usuarios = {
+    "Joao": "LibraJP",
+    "Estevan": "LibraDRE2025",
+    "Breno": "LibraDRE2025",
+    "Juan": "LibraJM"
+}
+
+if "autenticado" not in st.session_state:
+    st.session_state.autenticado = False
+
+if not st.session_state.autenticado:
+    with st.form("login_form"):
+        st.subheader("🔐 Área Restrita")
+        usuario = st.text_input("Usuário:")
+        senha = st.text_input("Senha:", type="password")
+        submit = st.form_submit_button("Entrar")
+
+        if submit:
+            if usuario in usuarios and usuarios[usuario] == senha:
+                st.session_state.autenticado = True
+                st.success("Login realizado com sucesso!")
+                st.rerun()  # recarrega a página sem os campos
+            else:
+                st.error("Usuário ou senha inválidos.")
+    st.stop()  # bloqueia o restante do app se não autenticado
+
+
+
+
 # =================== CORES ===================
 SPACE_CADET = "#272846"
 HARVEST_GOLD = "#e5a125"
