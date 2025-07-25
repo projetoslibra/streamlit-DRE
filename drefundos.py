@@ -187,7 +187,7 @@ st.dataframe(
 )
 
 # ========== ABA ORIGINAL (VISUAL COMPLETO) ==========
-st.markdown("### Tabela Original (DRE Completa)")
+st.markdown("### OITUDOBEMTabela Original (DRE Completa)")
 df_original = ler_google_sheet(SHEET_ID, ABA_ORIGINAL)
 
 
