@@ -231,7 +231,35 @@ st.dataframe(df, use_container_width=True, height=500)
 
 # ========== ABA ORIGINAL (VISUAL COMPLETO) ==========
 st.markdown("### Tabela Original (DRE Completa)")
-df_original = ler_google_sheet(SHEET_ID, ABA_ORIGINAL)
+
+
+
+
+# Lê a aba original ignorando as 3 primeiras linhas
+def ler_google_sheet_original(sheet_id: str, aba: str) -> pd.DataFrame:
+    aba_formatada = aba.replace(" ", "%20")
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={aba_formatada}"
+    df = pd.read_csv(url, skiprows=3)
+    return df
+
+df_original = ler_google_sheet_original(SHEET_ID, ABA_ORIGINAL)
+
+# Insere linhas em branco antes das linhas de destaque
+linhas_em_branco = []
+
+for i, row in df_original.iterrows():
+    nome_linha = str(row.iloc[0]).strip()
+    if nome_linha in linhas_destaque:
+        linha_em_branco = pd.Series([""] * len(df_original.columns), index=df_original.columns)
+        linhas_em_branco.append((i, linha_em_branco))
+
+for index, linha in reversed(linhas_em_branco):
+    df_original = pd.concat([
+        df_original.iloc[:index],
+        pd.DataFrame([linha]),
+        df_original.iloc[index:]
+    ], ignore_index=True)
+
 
 
 
