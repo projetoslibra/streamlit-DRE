@@ -152,12 +152,13 @@ for col in colunas_numericas:
     )
 
 st.set_page_config(page_title=f"DRE - Fundo {fundo_sel}", layout="wide")
-st.title(f"DRE - Fundo {fundo_sel}")
 
+# Título com logo à direita
 st.markdown(
-    """
-    <div style='display: flex; align-items: center; justify-content: flex-start; margin-top: -10px; margin-bottom: 20px;'>
-        <img src="https://raw.githubusercontent.com/projetoslibra/streamlit-DRE/main/Imagens/Capital-branca.png" style="height: 60px;" />
+    f"""
+    <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;'>
+        <h1 style='margin: 0; font-size: 2.3rem;'>DRE - Fundo {fundo_sel}</h1>
+        <img src="https://raw.githubusercontent.com/projetoslibra/streamlit-DRE/main/Imagens/Capital-branca.png" style="height: 80px;" />
     </div>
     """,
     unsafe_allow_html=True
